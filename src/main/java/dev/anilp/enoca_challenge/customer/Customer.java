@@ -33,19 +33,15 @@ public class Customer extends BaseEntity {
     private Cart cart;
 
     public Customer() {
-        this.cart = new Cart();
-        cart.setCustomer(this);
     }
 
     public Customer(String name, String lastName, String email) {
-        this();
         this.name = name;
         this.lastName = lastName;
         this.email = email;
     }
 
     public Customer(UUID id, String name, String lastName, String email) {
-        this();
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -90,6 +86,14 @@ public class Customer extends BaseEntity {
 
     public void setCart(Cart cart) {
         this.cart = cart;
+    }
+
+    public void addCart() {
+        if (cart != null) {
+            return;
+        }
+        cart = new Cart();
+        cart.setCustomer(this);
     }
 
     @Override
