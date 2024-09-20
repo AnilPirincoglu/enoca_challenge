@@ -25,7 +25,7 @@ public class Customer extends BaseEntity {
     @Column(name = "last_name", nullable = false, columnDefinition = "varchar(100)")
     private String lastName;
 
-    @Email
+    @Email(message = "Email should be valid")
     @Size(max = 150, message = "Email must be less than 150 characters")
     @Column(name = "email", nullable = false, columnDefinition = "varchar(150)")
     private String email;
