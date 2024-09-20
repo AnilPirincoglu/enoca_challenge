@@ -1,12 +1,15 @@
 package dev.anilp.enoca_challenge.product;
 
 import dev.anilp.enoca_challenge.BaseEntity;
+import dev.anilp.enoca_challenge.cartItem.CartItem;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,6 +32,9 @@ public class Product extends BaseEntity {
     @Column(name = "stock_quantity", nullable = false, columnDefinition = "integer")
     @Min(value = 1, message = "Stock quantity must be greater than 0")
     private int stockQuantity;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems = new ArrayList<>();
 
     public Product() {
     }
@@ -79,17 +85,21 @@ public class Product extends BaseEntity {
         this.stockQuantity = stockQuantity;
     }
 
+    public List<CartItem> getCartItems() {
+        return cartItems;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Product product)) return false;
         if (!super.equals(o)) return false;
-        return stockQuantity == product.stockQuantity && Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(price, product.price);
+        return stockQuantity == product.stockQuantity && Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(price, product.price) && Objects.equals(cartItems, product.cartItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, name, price, stockQuantity);
+        return Objects.hash(super.hashCode(), id, name, price, stockQuantity, cartItems);
     }
 
     @Override
@@ -99,6 +109,7 @@ public class Product extends BaseEntity {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", stockQuantity=" + stockQuantity +
+                ", cartItems=" + cartItems +
                 ", createdAt=" + getCreatedAt() +
                 ", updatedAt=" + getUpdatedAt() +
                 '}';
