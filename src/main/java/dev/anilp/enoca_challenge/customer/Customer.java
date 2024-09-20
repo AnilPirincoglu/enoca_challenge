@@ -1,6 +1,7 @@
 package dev.anilp.enoca_challenge.customer;
 
 import dev.anilp.enoca_challenge.BaseEntity;
+import dev.anilp.enoca_challenge.cart.Cart;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -28,17 +29,23 @@ public class Customer extends BaseEntity {
     @Size(max = 150, message = "Email must be less than 150 characters")
     @Column(name = "email", nullable = false, columnDefinition = "varchar(150)")
     private String email;
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cart cart;
 
     public Customer() {
+        this.cart = new Cart();
+        cart.setCustomer(this);
     }
 
     public Customer(String name, String lastName, String email) {
+        this();
         this.name = name;
         this.lastName = lastName;
         this.email = email;
     }
 
     public Customer(UUID id, String name, String lastName, String email) {
+        this();
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -77,17 +84,25 @@ public class Customer extends BaseEntity {
         this.email = email;
     }
 
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Customer customer)) return false;
         if (!super.equals(o)) return false;
-        return Objects.equals(id, customer.id) && Objects.equals(name, customer.name) && Objects.equals(lastName, customer.lastName) && Objects.equals(email, customer.email);
+        return Objects.equals(id, customer.id) && Objects.equals(name, customer.name) && Objects.equals(lastName, customer.lastName) && Objects.equals(email, customer.email) && Objects.equals(cart, customer.cart);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, name, lastName, email);
+        return Objects.hash(super.hashCode(), id, name, lastName, email, cart);
     }
 
     @Override
@@ -97,6 +112,7 @@ public class Customer extends BaseEntity {
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", cart=" + cart +
                 ", createdAt=" + getCreatedAt() +
                 ", updatedAt=" + getUpdatedAt() +
                 '}';
