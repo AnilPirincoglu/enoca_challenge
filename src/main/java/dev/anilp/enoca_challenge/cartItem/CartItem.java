@@ -28,11 +28,12 @@ public class CartItem extends BaseEntity {
     private Product product;
 
     public CartItem() {
+        this.quantity = 1;
     }
 
-    public CartItem(CartItemId id, int quantity, Cart cart, Product product) {
+    public CartItem(CartItemId id, Cart cart, Product product) {
+        this();
         this.id = id;
-        this.quantity = quantity;
         this.cart = cart;
         this.product = product;
     }
