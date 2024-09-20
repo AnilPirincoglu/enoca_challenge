@@ -33,10 +33,9 @@ public class Cart extends BaseEntity {
         this.totalAmount = BigDecimal.ZERO;
     }
 
-    public Cart(Long id, BigDecimal totalAmount, Customer customer) {
+    public Cart(Long id, Customer customer) {
         this();
         this.id = id;
-        this.totalAmount = totalAmount;
         this.customer = customer;
     }
 
