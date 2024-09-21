@@ -25,13 +25,13 @@ public class Product extends BaseEntity {
     @Column(name = "name", nullable = false, columnDefinition = "varchar(100)")
     private String name;
 
-    @Column(name = "price", nullable = false, columnDefinition = "decimal", precision = 8, scale = 2)
     @DecimalMin(value = "0.01", message = "Price must be greater than 0")
+    @Column(name = "price", nullable = false, columnDefinition = "decimal", precision = 8, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "stock_quantity", nullable = false, columnDefinition = "integer")
     @Min(value = 1, message = "Stock quantity must be greater than 0")
-    private int stockQuantity;
+    @Column(name = "stock_quantity", nullable = false, columnDefinition = "integer")
+    private Integer stockQuantity;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
