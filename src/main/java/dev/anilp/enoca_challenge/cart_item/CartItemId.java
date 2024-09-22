@@ -1,4 +1,4 @@
-package dev.anilp.enoca_challenge.cartItem;
+package dev.anilp.enoca_challenge.cart_item;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

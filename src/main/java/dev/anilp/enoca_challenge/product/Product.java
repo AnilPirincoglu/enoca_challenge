@@ -1,8 +1,15 @@
 package dev.anilp.enoca_challenge.product;
 
 import dev.anilp.enoca_challenge.BaseEntity;
-import dev.anilp.enoca_challenge.cartItem.CartItem;
-import jakarta.persistence.*;
+import dev.anilp.enoca_challenge.cart_item.CartItem;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -34,7 +41,7 @@ public class Product extends BaseEntity {
     private Integer stockQuantity;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> cartItems = new ArrayList<>();
+    private final List<CartItem> cartItems = new ArrayList<>();
 
     public Product() {
     }
@@ -94,7 +101,7 @@ public class Product extends BaseEntity {
         if (this == o) return true;
         if (!(o instanceof Product product)) return false;
         if (!super.equals(o)) return false;
-        return stockQuantity == product.stockQuantity && Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(price, product.price) && Objects.equals(cartItems, product.cartItems);
+        return Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(price, product.price) && Objects.equals(stockQuantity, product.stockQuantity) && Objects.equals(cartItems, product.cartItems);
     }
 
     @Override
@@ -110,8 +117,8 @@ public class Product extends BaseEntity {
                 ", price=" + price +
                 ", stockQuantity=" + stockQuantity +
                 ", cartItems=" + cartItems +
-                ", createdAt=" + getCreatedAt() +
-                ", updatedAt=" + getUpdatedAt() +
+                ", updatedAt=" + updatedAt +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

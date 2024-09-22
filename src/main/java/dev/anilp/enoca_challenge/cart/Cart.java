@@ -1,9 +1,20 @@
 package dev.anilp.enoca_challenge.cart;
 
 import dev.anilp.enoca_challenge.BaseEntity;
-import dev.anilp.enoca_challenge.cartItem.CartItem;
+import dev.anilp.enoca_challenge.cart_item.CartItem;
 import dev.anilp.enoca_challenge.customer.Customer;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,7 +38,7 @@ public class Cart extends BaseEntity {
     private Customer customer;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> cartItems = new ArrayList<>();
+    private final List<CartItem> cartItems = new ArrayList<>();
 
     public Cart() {
         this.totalAmount = BigDecimal.ZERO;
@@ -87,8 +98,8 @@ public class Cart extends BaseEntity {
                 ", totalAmount=" + totalAmount +
                 ", customer=" + customer +
                 ", cartItems=" + cartItems +
-                ", createdAt=" + getCreatedAt() +
-                ", updatedAt=" + getUpdatedAt() +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

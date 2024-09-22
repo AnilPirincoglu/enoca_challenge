@@ -1,9 +1,16 @@
-package dev.anilp.enoca_challenge.cartItem;
+package dev.anilp.enoca_challenge.cart_item;
 
 import dev.anilp.enoca_challenge.BaseEntity;
 import dev.anilp.enoca_challenge.cart.Cart;
 import dev.anilp.enoca_challenge.product.Product;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
 
 import java.util.Objects;
 
@@ -90,8 +97,8 @@ public class CartItem extends BaseEntity {
                 ", quantity=" + quantity +
                 ", cart=" + cart +
                 ", product=" + product +
-                ", createdAt=" + getCreatedAt() +
-                ", updatedAt=" + getUpdatedAt() +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }
