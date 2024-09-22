@@ -19,6 +19,14 @@ public class DefaultExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(DefaultExceptionHandler.class);
     private static final String VALIDATION_FAILED = "Validation Failed";
 
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorResponse> handle(DuplicateResourceException e, HttpServletRequest request) {
+
+        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.CONFLICT, e.getMessage(), List.of());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException e, HttpServletRequest request) {
 
