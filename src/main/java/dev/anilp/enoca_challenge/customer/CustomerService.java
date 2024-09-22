@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static dev.anilp.enoca_challenge.customer.CustomerMapper.AddCustomerRequestDtoToCustomer;
+import static dev.anilp.enoca_challenge.customer.CustomerMapper.AddRequestToCustomer;
 import static dev.anilp.enoca_challenge.exceptions.ErrorMessage.EMAIL_ALREADY_EXISTS;
 
 @Service
@@ -26,7 +26,7 @@ public class CustomerService {
             throw new DuplicateResourceException(EMAIL_ALREADY_EXISTS, request.email());
         }
 
-        Customer customer = AddCustomerRequestDtoToCustomer(request);
+        Customer customer = AddRequestToCustomer(request);
 
         log.info("Adding customer: {}", request);
         customerRepository.save(customer);
