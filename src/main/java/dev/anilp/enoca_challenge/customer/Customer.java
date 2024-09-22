@@ -108,13 +108,12 @@ public class Customer extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Customer customer)) return false;
-        if (!super.equals(o)) return false;
         return Objects.equals(id, customer.id) && Objects.equals(name, customer.name) && Objects.equals(lastName, customer.lastName) && Objects.equals(email, customer.email) && Objects.equals(cart, customer.cart);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, name, lastName, email, cart);
+        return Objects.hash(id, name, lastName, email, cart);
     }
 
     @Override

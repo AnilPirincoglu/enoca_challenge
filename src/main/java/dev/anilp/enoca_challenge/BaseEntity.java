@@ -6,7 +6,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @MappedSuperclass
 public abstract class BaseEntity {
@@ -26,25 +25,5 @@ public abstract class BaseEntity {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BaseEntity that)) return false;
-        return Objects.equals(createdAt, that.createdAt) && Objects.equals(updatedAt, that.updatedAt);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(createdAt, updatedAt);
-    }
-
-    @Override
-    public String toString() {
-        return "BaseEntity{" +
-                "createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
     }
 }

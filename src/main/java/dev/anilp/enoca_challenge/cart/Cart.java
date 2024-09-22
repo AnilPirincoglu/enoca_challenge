@@ -82,13 +82,12 @@ public class Cart extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Cart cart)) return false;
-        if (!super.equals(o)) return false;
         return Objects.equals(id, cart.id) && Objects.equals(totalAmount, cart.totalAmount) && Objects.equals(customer, cart.customer) && Objects.equals(cartItems, cart.cartItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, totalAmount, customer, cartItems);
+        return Objects.hash(id, totalAmount, customer, cartItems);
     }
 
     @Override

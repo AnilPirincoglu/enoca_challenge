@@ -100,13 +100,12 @@ public class Product extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Product product)) return false;
-        if (!super.equals(o)) return false;
         return Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(price, product.price) && Objects.equals(stockQuantity, product.stockQuantity) && Objects.equals(cartItems, product.cartItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, name, price, stockQuantity, cartItems);
+        return Objects.hash(id, name, price, stockQuantity, cartItems);
     }
 
     @Override
