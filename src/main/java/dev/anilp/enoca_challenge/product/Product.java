@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -21,7 +22,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity(name = "Product")
-@Table(name = "product")
+@Table(name = "product", uniqueConstraints = {@UniqueConstraint(name = "product_name_unique", columnNames = "name")})
 public class Product extends BaseEntity {
 
     @Id
