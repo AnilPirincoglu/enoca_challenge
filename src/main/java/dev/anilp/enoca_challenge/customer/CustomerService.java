@@ -20,15 +20,18 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
-    public void addCustomer(AddCustomerRequestDto request) {
+    public void addCustomer(AddCustomerRequestDto addCustomerRequestDto) {
+        existsCustomerByEmail(addCustomerRequestDto.email());
 
-        if (customerRepository.existsByEmail(request.email())) {
-            throw new DuplicateResourceException(EMAIL_ALREADY_EXISTS, request.email());
-        }
+        Customer customer = AddRequestToCustomer(addCustomerRequestDto);
 
-        Customer customer = AddRequestToCustomer(request);
-
-        log.info("Adding customer: {}", request);
+        log.info("Adding customer: {}", addCustomerRequestDto);
         customerRepository.save(customer);
+    }
+
+    private void existsCustomerByEmail(String email) {
+        if (customerRepository.existsByEmail(email)) {
+            throw new DuplicateResourceException(EMAIL_ALREADY_EXISTS, email);
+        }
     }
 }
