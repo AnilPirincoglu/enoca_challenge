@@ -27,6 +27,14 @@ public class DefaultExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handle(ResourceNotFoundException e, HttpServletRequest request) {
+
+        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.NOT_FOUND, e.getMessage(), List.of());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException e, HttpServletRequest request) {
 
