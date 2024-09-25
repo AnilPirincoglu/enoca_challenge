@@ -1,5 +1,8 @@
-package dev.anilp.enoca_challenge.exceptions;
+package dev.anilp.enoca_challenge.exception;
 
+import dev.anilp.enoca_challenge.exception.exceptions.DuplicateResourceException;
+import dev.anilp.enoca_challenge.exception.exceptions.InsufficientStockException;
+import dev.anilp.enoca_challenge.exception.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +21,14 @@ public class DefaultExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultExceptionHandler.class);
     private static final String VALIDATION_FAILED = "Validation Failed";
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ErrorResponse> handle(InsufficientStockException e, HttpServletRequest request) {
+
+        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.BAD_REQUEST, e.getMessage(), List.of());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ErrorResponse> handle(DuplicateResourceException e, HttpServletRequest request) {

@@ -1,4 +1,7 @@
-package dev.anilp.enoca_challenge.customer;
+package dev.anilp.enoca_challenge.customer.util;
+
+import dev.anilp.enoca_challenge.customer.Customer;
+import dev.anilp.enoca_challenge.customer.util.dto.AddCustomerRequestDto;
 
 public class CustomerMapper {
 

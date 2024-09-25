@@ -1,4 +1,4 @@
-package dev.anilp.enoca_challenge.customer;
+package dev.anilp.enoca_challenge.customer.util.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;

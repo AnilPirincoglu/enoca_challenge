@@ -1,5 +1,6 @@
 package dev.anilp.enoca_challenge.customer;
 
+import dev.anilp.enoca_challenge.customer.util.dto.AddCustomerRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-package dev.anilp.enoca_challenge.product.dto;
+package dev.anilp.enoca_challenge.product.util.dto;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.DecimalMin;

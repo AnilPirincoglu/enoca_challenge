@@ -1,7 +1,8 @@
-package dev.anilp.enoca_challenge.product;
+package dev.anilp.enoca_challenge.product.util;
 
-import dev.anilp.enoca_challenge.product.dto.AddProductRequestDto;
-import dev.anilp.enoca_challenge.product.dto.ProductResponseDto;
+import dev.anilp.enoca_challenge.product.Product;
+import dev.anilp.enoca_challenge.product.util.dto.AddProductRequestDto;
+import dev.anilp.enoca_challenge.product.util.dto.ProductResponseDto;
 
 public class ProductMapper {
 
