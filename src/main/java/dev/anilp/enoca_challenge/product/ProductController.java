@@ -1,8 +1,9 @@
 package dev.anilp.enoca_challenge.product;
 
-import dev.anilp.enoca_challenge.product.dto.AddProductRequestDto;
-import dev.anilp.enoca_challenge.product.dto.ProductResponseDto;
-import dev.anilp.enoca_challenge.product.dto.UpdateProductRequestDto;
+import dev.anilp.enoca_challenge.product.util.dto.AddProductRequestDto;
+import dev.anilp.enoca_challenge.product.util.dto.ProductResponseDto;
+import dev.anilp.enoca_challenge.product.util.dto.UpdateProductRequestDto;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,13 +39,13 @@ public class ProductController {
     }
 
     @PostMapping
-    public void addProduct(@RequestBody AddProductRequestDto addProductRequestDTO) {
+    public void addProduct(@Valid @RequestBody AddProductRequestDto addProductRequestDTO) {
         productService.addProduct(addProductRequestDTO);
     }
 
     @PutMapping("{id}")
-    public ProductResponseDto updateProduct(@PathVariable UUID id, @RequestBody UpdateProductRequestDto updateProductRequestDTO) {
-        return productService.updateProduct(id, updateProductRequestDTO);
+    public void updateProduct(@PathVariable UUID id, @Valid @RequestBody UpdateProductRequestDto updateProductRequestDTO) {
+        productService.updateProduct(id, updateProductRequestDTO);
     }
 
     @DeleteMapping("{id}")
