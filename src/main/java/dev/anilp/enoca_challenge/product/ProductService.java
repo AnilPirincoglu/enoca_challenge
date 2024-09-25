@@ -1,9 +1,10 @@
 package dev.anilp.enoca_challenge.product;
 
-import dev.anilp.enoca_challenge.exceptions.ResourceNotFoundException;
-import dev.anilp.enoca_challenge.product.dto.AddProductRequestDto;
-import dev.anilp.enoca_challenge.product.dto.ProductResponseDto;
-import dev.anilp.enoca_challenge.product.dto.UpdateProductRequestDto;
+import dev.anilp.enoca_challenge.exception.exceptions.ResourceNotFoundException;
+import dev.anilp.enoca_challenge.product.util.ProductMapper;
+import dev.anilp.enoca_challenge.product.util.dto.AddProductRequestDto;
+import dev.anilp.enoca_challenge.product.util.dto.ProductResponseDto;
+import dev.anilp.enoca_challenge.product.util.dto.UpdateProductRequestDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-import static dev.anilp.enoca_challenge.exceptions.ErrorMessage.PRODUCT_ALREADY_EXISTS;
-import static dev.anilp.enoca_challenge.exceptions.ErrorMessage.PRODUCT_NOT_FOUND_WITH_GIVEN_ID;
-import static dev.anilp.enoca_challenge.product.ProductMapper.addProductRequestToProduct;
-import static dev.anilp.enoca_challenge.product.ProductMapper.productToResponse;
+import static dev.anilp.enoca_challenge.exception.ErrorMessage.PRODUCT_ALREADY_EXISTS;
+import static dev.anilp.enoca_challenge.exception.ErrorMessage.PRODUCT_NOT_FOUND_WITH_GIVEN_ID;
+import static dev.anilp.enoca_challenge.exception.ErrorMessage.PRODUCT_NOT_FOUND_WITH_GIVEN_NAME;
+import static dev.anilp.enoca_challenge.product.util.ProductMapper.addProductRequestToProduct;
+import static dev.anilp.enoca_challenge.product.util.ProductMapper.productToResponse;
 
 @Service
 public class ProductService {
@@ -46,7 +48,7 @@ public class ProductService {
                 addProductRequestToProduct(addProductRequestDTO));
     }
 
-    public ProductResponseDto updateProduct(UUID id, UpdateProductRequestDto updateProductRequestDTO) {
+    public void updateProduct(UUID id, UpdateProductRequestDto updateProductRequestDTO) {
         checkProductExistsByName(updateProductRequestDTO.name());
         Product product = findProductById(id);
 
@@ -55,7 +57,7 @@ public class ProductService {
         product.setPrice(updateProductRequestDTO.price());
         product.setStockQuantity(updateProductRequestDTO.stockQuantity());
 
-        return productToResponse(productRepository.save(product));
+        productRepository.save(product);
     }
 
     public void deleteProduct(UUID id) {
@@ -63,6 +65,11 @@ public class ProductService {
 
         log.info("Deleting product: {}", product);
         productRepository.delete(product);
+    }
+
+    public Product findProductByName(String name) {
+        return productRepository.findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_NOT_FOUND_WITH_GIVEN_NAME, name));
     }
 
     private Product findProductById(UUID id) {
