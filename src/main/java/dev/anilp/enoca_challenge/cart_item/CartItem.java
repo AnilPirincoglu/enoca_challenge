@@ -26,9 +26,6 @@ public class CartItem extends BaseEntity {
     @EmbeddedId
     private CartItemId id;
 
-    @Column(name = "price", nullable = false, columnDefinition = "numeric")
-    private BigDecimal price;
-
     @Column(name = "quantity", nullable = false, columnDefinition = "integer")
     private int quantity;
 
@@ -59,21 +56,18 @@ public class CartItem extends BaseEntity {
         return quantity;
     }
 
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
     public void calculateTotalAmount() {
-        this.price = product.getPrice();
-        this.totalAmount = this.price.multiply(BigDecimal.valueOf(this.quantity));
+        BigDecimal price = product.getPrice();
+        this.totalAmount = price.multiply(BigDecimal.valueOf(this.quantity));
         log.info("Total amount calculated for product: {}, total amount: {}", this.product.getName(), this.totalAmount);
-    }
-
-    public void updateQuantity(int quantity) {
-        this.quantity += quantity;
-        price = product.getPrice();
-        calculateTotalAmount();
-        log.info("Cart item updated: {}, total amount: {}", this.getProduct().getName(), this.totalAmount);
     }
 
     public Product getProduct() {
