@@ -14,18 +14,20 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @ControllerAdvice
 public class DefaultExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultExceptionHandler.class);
-    private static final String VALIDATION_FAILED = "Validation Failed";
 
     @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<ErrorResponse> handle(InsufficientStockException e, HttpServletRequest request) {
 
-        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.BAD_REQUEST, e.getMessage(), List.of());
+        List<String> errors = List.of(e.getMessage());
+
+        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.BAD_REQUEST, errors);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
@@ -33,7 +35,9 @@ public class DefaultExceptionHandler {
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ErrorResponse> handle(DuplicateResourceException e, HttpServletRequest request) {
 
-        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.CONFLICT, e.getMessage(), List.of());
+        List<String> errors = List.of(e.getMessage());
+
+        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.CONFLICT, errors);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
@@ -41,7 +45,9 @@ public class DefaultExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handle(ResourceNotFoundException e, HttpServletRequest request) {
 
-        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.NOT_FOUND, e.getMessage(), List.of());
+        List<String> errors = List.of(e.getMessage());
+
+        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.NOT_FOUND, errors);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
@@ -53,16 +59,18 @@ public class DefaultExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
 
-        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.BAD_REQUEST, VALIDATION_FAILED, errors);
+        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.BAD_REQUEST, errors);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request) {
-        log.error("Error Name : {}", e.getClass().getSimpleName());
+        log.error("Error Name : {}, Stack-Trace : {}", e.getClass().getSimpleName(), Arrays.toString(e.getStackTrace()).replace(",", "\n"));
 
-        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), List.of());
+        List<String> errors = List.of(e.getMessage());
+
+        ErrorResponse errorResponse = createErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, errors);
 
         return new ResponseEntity<>(
                 errorResponse,
@@ -70,11 +78,10 @@ public class DefaultExceptionHandler {
         );
     }
 
-    private ErrorResponse createErrorResponse(HttpServletRequest request, HttpStatus httpStatus, String message, List<String> errors) {
+    private ErrorResponse createErrorResponse(HttpServletRequest request, HttpStatus httpStatus, List<String> errors) {
         return new ErrorResponse(
                 request.getRequestURI(),
                 httpStatus.value(),
-                message,
                 LocalDateTime.now(),
                 errors
         );
