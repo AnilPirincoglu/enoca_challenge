@@ -11,18 +11,29 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity(name = "CartItem")
 @Table(name = "cart_item")
 public class CartItem extends BaseEntity {
 
+    private static final Logger log = LoggerFactory.getLogger(CartItem.class);
+
     @EmbeddedId
     private CartItemId id;
 
+    @Column(name = "price", nullable = false, columnDefinition = "numeric")
+    private BigDecimal price;
+
     @Column(name = "quantity", nullable = false, columnDefinition = "integer")
     private int quantity;
+
+    @Column(name = "total_price", nullable = false, columnDefinition = "numeric")
+    private BigDecimal totalAmount;
 
     @ManyToOne
     @MapsId("cartId")
@@ -35,58 +46,54 @@ public class CartItem extends BaseEntity {
     private Product product;
 
     public CartItem() {
-        this.quantity = 1;
     }
 
-    public CartItem(CartItemId id, Cart cart, Product product) {
-        this();
+    public CartItem(CartItemId id, int quantity, Cart cart, Product product) {
         this.id = id;
+        this.quantity = quantity;
         this.cart = cart;
         this.product = product;
-    }
-
-    public CartItemId getId() {
-        return id;
-    }
-
-    public void setId(CartItemId id) {
-        this.id = id;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
     }
 
-    public Cart getCart() {
-        return cart;
+    public void calculateTotalAmount() {
+        this.price = product.getPrice();
+        this.totalAmount = this.price.multiply(BigDecimal.valueOf(this.quantity));
+        log.info("Total amount calculated for product: {}, total amount: {}", this.product.getName(), this.totalAmount);
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    public void updateQuantity(int quantity) {
+        this.quantity += quantity;
+        price = product.getPrice();
+        calculateTotalAmount();
+        log.info("Cart item updated: {}, total amount: {}", this.getProduct().getName(), this.totalAmount);
     }
 
     public Product getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CartItem cartItem)) return false;
-        return quantity == cartItem.quantity && Objects.equals(id, cartItem.id) && Objects.equals(cart, cartItem.cart) && Objects.equals(product, cartItem.product);
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CartItem cartItem)) {
+            return false;
+        }
+        return Objects.equals(id, cartItem.id) && Objects.equals(cart, cartItem.cart) && Objects.equals(product, cartItem.product);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, quantity, cart, product);
+        return Objects.hash(id, cart, product);
     }
 
     @Override
@@ -94,8 +101,9 @@ public class CartItem extends BaseEntity {
         return "CartItem{" +
                 "id=" + id +
                 ", quantity=" + quantity +
-                ", cart=" + cart +
-                ", product=" + product +
+                ", cart=" + cart.getId() +
+                ", product=" + product.getName() +
+                ", totalAmount=" + totalAmount +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
