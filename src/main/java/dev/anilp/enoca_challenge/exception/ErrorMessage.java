@@ -6,6 +6,7 @@ public enum ErrorMessage {
     PRODUCT_NOT_FOUND_WITH_GIVEN_ID("Product not found with given id: "),
     PRODUCT_ALREADY_EXISTS("Product already exists with name: "),
     PRODUCT_NOT_FOUND_WITH_GIVEN_NAME("Product not found with given name: "),
+    PRODUCT_NOT_IN_CART("Product not in your cart with given name: "),
     INSUFFICIENT_STOCK("Insufficient stock! Available stock: "),
     CART_NOT_FOUND_WITH_GIVEN_ID("Cart not found with given id: ");
 
