@@ -53,13 +53,6 @@ public class Product extends BaseEntity {
         this.stockQuantity = stockQuantity;
     }
 
-    public Product(UUID id, String name, BigDecimal price, int stockQuantity) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.stockQuantity = stockQuantity;
-    }
-
     public UUID getId() {
         return id;
     }
@@ -93,14 +86,14 @@ public class Product extends BaseEntity {
         this.stockQuantity = stockQuantity;
     }
 
-    public List<CartItem> getCartItems() {
-        return cartItems;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Product product)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Product product)) {
+            return false;
+        }
         return Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(price, product.price) && Objects.equals(stockQuantity, product.stockQuantity) && Objects.equals(cartItems, product.cartItems);
     }
 
@@ -116,7 +109,6 @@ public class Product extends BaseEntity {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", stockQuantity=" + stockQuantity +
-                ", cartItems=" + cartItems +
                 ", updatedAt=" + updatedAt +
                 ", createdAt=" + createdAt +
                 '}';
