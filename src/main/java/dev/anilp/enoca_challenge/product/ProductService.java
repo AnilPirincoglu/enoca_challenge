@@ -1,5 +1,6 @@
 package dev.anilp.enoca_challenge.product;
 
+import dev.anilp.enoca_challenge.exception.exceptions.InsufficientStockException;
 import dev.anilp.enoca_challenge.exception.exceptions.ResourceNotFoundException;
 import dev.anilp.enoca_challenge.product.util.ProductMapper;
 import dev.anilp.enoca_challenge.product.util.dto.AddProductRequestDto;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+import static dev.anilp.enoca_challenge.exception.ErrorMessage.INSUFFICIENT_STOCK;
 import static dev.anilp.enoca_challenge.exception.ErrorMessage.PRODUCT_ALREADY_EXISTS;
 import static dev.anilp.enoca_challenge.exception.ErrorMessage.PRODUCT_NOT_FOUND_WITH_GIVEN_ID;
 import static dev.anilp.enoca_challenge.exception.ErrorMessage.PRODUCT_NOT_FOUND_WITH_GIVEN_NAME;
@@ -65,6 +67,12 @@ public class ProductService {
 
         log.info("Deleting product: {}", product);
         productRepository.delete(product);
+    }
+
+    public void checkStockQuantity(Product product, int quantity) {
+        if (product.getStockQuantity() < quantity) {
+            throw new InsufficientStockException(INSUFFICIENT_STOCK, product.getStockQuantity());
+        }
     }
 
     public Product findProductByName(String name) {
