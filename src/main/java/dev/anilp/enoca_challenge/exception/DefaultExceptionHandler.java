@@ -24,6 +24,7 @@ public class DefaultExceptionHandler {
 
     @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<ErrorResponse> handle(InsufficientStockException e, HttpServletRequest request) {
+        log.info("{}", e.getMessage());
 
         List<String> errors = List.of(e.getMessage());
 
@@ -34,6 +35,7 @@ public class DefaultExceptionHandler {
 
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ErrorResponse> handle(DuplicateResourceException e, HttpServletRequest request) {
+        log.info("{}", e.getMessage());
 
         List<String> errors = List.of(e.getMessage());
 
@@ -44,6 +46,7 @@ public class DefaultExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handle(ResourceNotFoundException e, HttpServletRequest request) {
+        log.info("{}", e.getMessage());
 
         List<String> errors = List.of(e.getMessage());
 
@@ -54,6 +57,7 @@ public class DefaultExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException e, HttpServletRequest request) {
+        log.info("{}", e.getMessage());
 
         List<String> errors = e.getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
