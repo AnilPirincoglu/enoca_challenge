@@ -37,6 +37,7 @@ public class Customer extends BaseEntity {
     @Size(max = 150, message = "Email must be less than 150 characters")
     @Column(name = "email", nullable = false, columnDefinition = "varchar(150)")
     private String email;
+
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
 
@@ -49,43 +50,12 @@ public class Customer extends BaseEntity {
         this.email = email;
     }
 
-    public Customer(UUID id, String name, String lastName, String email) {
-        this.id = id;
-        this.name = name;
-        this.lastName = lastName;
-        this.email = email;
-    }
-
     public UUID getId() {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters") String getName() {
         return name;
-    }
-
-    public void setName(@Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters") String name) {
-        this.name = name;
-    }
-
-    public @Size(min = 2, max = 100, message = "Last name must be between 2 and 100 characters") String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(@Size(min = 2, max = 100, message = "Last name must be between 2 and 100 characters") String lastName) {
-        this.lastName = lastName;
-    }
-
-    public @Email @Size(max = 150, message = "Email must be less than 150 characters") String getEmail() {
-        return email;
-    }
-
-    public void setEmail(@Email @Size(max = 150, message = "Email must be less than 150 characters") String email) {
-        this.email = email;
     }
 
     public Cart getCart() {
@@ -94,20 +64,25 @@ public class Customer extends BaseEntity {
 
     public void setCart(Cart cart) {
         this.cart = cart;
+        if (cart.getCustomer() != this) {
+            cart.setCustomer(this);
+        }
     }
 
-    public void addCart() {
-        if (cart != null) {
-            return;
-        }
-        cart = new Cart();
-        cart.setCustomer(this);
+    public Cart addCart() {
+        cart = new Cart(this);
+        this.setCart(cart);
+        return cart;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Customer customer)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Customer customer)) {
+            return false;
+        }
         return Objects.equals(id, customer.id) && Objects.equals(name, customer.name) && Objects.equals(lastName, customer.lastName) && Objects.equals(email, customer.email) && Objects.equals(cart, customer.cart);
     }
 
@@ -123,7 +98,7 @@ public class Customer extends BaseEntity {
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", cart=" + cart +
+                ", cart=" + cart.getCartItems() +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
