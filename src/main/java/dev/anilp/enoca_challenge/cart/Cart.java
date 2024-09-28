@@ -15,6 +15,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -25,9 +27,12 @@ import java.util.Objects;
 @Table(name = "cart")
 public class Cart extends BaseEntity {
 
+    private static final Logger log = LoggerFactory.getLogger(Cart.class);
+
     @Id
     @SequenceGenerator(name = "cart_sequence", sequenceName = "cart_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cart_sequence")
+    @Column(name = "id", updatable = false)
     private Long id;
 
     @Column(name = "total_amount", nullable = false, columnDefinition = "decimal", precision = 10, scale = 2)
@@ -41,29 +46,14 @@ public class Cart extends BaseEntity {
     private final List<CartItem> cartItems = new ArrayList<>();
 
     public Cart() {
-        this.totalAmount = BigDecimal.ZERO;
     }
 
-    public Cart(Long id, Customer customer) {
-        this();
-        this.id = id;
+    public Cart(Customer customer) {
         this.customer = customer;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
     }
 
     public Customer getCustomer() {
@@ -72,16 +62,40 @@ public class Cart extends BaseEntity {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+        if (Objects.equals(customer.getCart(), this)) {
+            customer.setCart(this);
+        }
     }
 
     public List<CartItem> getCartItems() {
         return cartItems;
     }
 
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void calculateTotalAmount() {
+        this.totalAmount = cartItems.stream()
+                .map(CartItem::getTotalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        log.info("Calculated cart {} total amount: {}", this.getId(), this.totalAmount);
+    }
+
+    @Override
+    protected void onCreate() {
+        super.onCreate();
+        this.totalAmount = BigDecimal.ZERO;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Cart cart)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Cart cart)) {
+            return false;
+        }
         return Objects.equals(id, cart.id) && Objects.equals(totalAmount, cart.totalAmount) && Objects.equals(customer, cart.customer) && Objects.equals(cartItems, cart.cartItems);
     }
 
@@ -95,7 +109,7 @@ public class Cart extends BaseEntity {
         return "Cart{" +
                 "id=" + id +
                 ", totalAmount=" + totalAmount +
-                ", customer=" + customer +
+                ", customer=" + customer.getName() +
                 ", cartItems=" + cartItems +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
