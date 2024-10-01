@@ -46,7 +46,7 @@ class CartServiceTest {
     }
 
     @Test
-    void getCart_returnsCartResponseDto_whenCartExists() {
+    void itShouldGetCartDtoWhenCartDoesExist() {
         Long cartId = 1L;
         Customer customer = new Customer();
 
@@ -63,7 +63,7 @@ class CartServiceTest {
     }
 
     @Test
-    void getCart_throwsResourceNotFoundException_whenCartDoesNotExist() {
+    void itShouldThrowsResourceNotFoundExceptionWhenCartDoesNotExist() {
         Long cartId = 1L;
         when(cartRepository.findById(cartId)).thenReturn(Optional.empty());
 
@@ -72,7 +72,7 @@ class CartServiceTest {
     }
 
     @Test
-    void addProductToCart_addsNewItem_whenCartIsEmpty() {
+    void itShouldAddsNewItemWhenCartIsEmpty() {
         UUID customerId = UUID.randomUUID();
         AddProductToCartRequestDto requestDto = new AddProductToCartRequestDto(customerId, "Product1");
 
@@ -93,7 +93,7 @@ class CartServiceTest {
     }
 
     @Test
-    void addProductToCart_addsNewItem_whenCartContainsOtherProducts() {
+    void itShouldAddsNewItemWhenCartContainsOtherProducts() {
         UUID customerId = UUID.randomUUID();
         AddProductToCartRequestDto requestDto = new AddProductToCartRequestDto(customerId, "Product1");
 
@@ -123,7 +123,7 @@ class CartServiceTest {
     }
 
     @Test
-    void addProductToCart_updatesQuantity_whenProductInCart() {
+    void itShouldUpdatesQuantityWhenProductInCart() {
         UUID customerId = UUID.randomUUID();
         AddProductToCartRequestDto requestDto = new AddProductToCartRequestDto(customerId, "Product1");
         Product product = new Product();
@@ -143,7 +143,7 @@ class CartServiceTest {
     }
 
     @Test
-    void updateCart_updatesCartItems() {
+    void itShouldUpdatesCartItems() {
         Long cartId = 1L;
         UpdateCartRequestDto requestDto = new UpdateCartRequestDto(List.of(new CartItemRequestDto("Product1", 2)));
         Product product = new Product();
@@ -160,7 +160,7 @@ class CartServiceTest {
     }
 
     @Test
-    void removeProductFromCart_removesItem_whenProductInCart() {
+    void itShouldRemovesCartItemWhenProductInCart() {
         UUID customerId = UUID.randomUUID();
         RemoveProductFromCartRequestDto requestDto = new RemoveProductFromCartRequestDto(customerId);
         Product product = new Product();
@@ -177,7 +177,7 @@ class CartServiceTest {
     }
 
     @Test
-    void removeProductFromCart_throwsResourceNotFoundException_whenProductNotInCart() {
+    void itShouldThrowsResourceNotFoundExceptionWhenProductNotInCart() {
         UUID customerId = UUID.randomUUID();
         RemoveProductFromCartRequestDto requestDto = new RemoveProductFromCartRequestDto(customerId);
         Cart cart = new Cart();
@@ -187,7 +187,7 @@ class CartServiceTest {
     }
 
     @Test
-    void emptyCart_clearsAllItems_whenCartExists() {
+    void itShouldClearsAllItemsWhenCartExists() {
         Long cartId = 1L;
         Cart cart = new Cart();
         CartItem cartItem = new CartItem(new CartItemId(cart.getId(), UUID.randomUUID()), 1, cart, new Product());
