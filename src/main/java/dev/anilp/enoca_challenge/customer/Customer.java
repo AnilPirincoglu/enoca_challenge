@@ -2,18 +2,22 @@ package dev.anilp.enoca_challenge.customer;
 
 import dev.anilp.enoca_challenge.BaseEntity;
 import dev.anilp.enoca_challenge.cart.Cart;
+import dev.anilp.enoca_challenge.order.Order;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -40,6 +44,9 @@ public class Customer extends BaseEntity {
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
+    @SuppressWarnings("unused")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Order> orders = new ArrayList<>();
 
     public Customer() {
     }
