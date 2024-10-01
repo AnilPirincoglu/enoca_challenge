@@ -46,9 +46,11 @@ public class Cart extends BaseEntity {
     private final List<CartItem> cartItems = new ArrayList<>();
 
     public Cart() {
+        this.totalAmount = BigDecimal.ZERO;
     }
 
     public Cart(Customer customer) {
+        this();
         this.customer = customer;
     }
 
@@ -84,12 +86,6 @@ public class Cart extends BaseEntity {
                 .map(CartItem::getTotalAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         log.info("Calculated cart {} total amount: {}", this.getId(), this.totalAmount);
-    }
-
-    @Override
-    protected void onCreate() {
-        super.onCreate();
-        this.totalAmount = BigDecimal.ZERO;
     }
 
     @Override
