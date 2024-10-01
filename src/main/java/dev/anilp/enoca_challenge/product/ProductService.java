@@ -8,10 +8,10 @@ import dev.anilp.enoca_challenge.product.util.dto.ProductResponseDto;
 import dev.anilp.enoca_challenge.product.util.dto.UpdateProductRequestDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static dev.anilp.enoca_challenge.exception.ErrorMessage.INSUFFICIENT_STOCK;
@@ -27,7 +27,6 @@ public class ProductService {
     private static final Logger log = LoggerFactory.getLogger(ProductService.class);
     private final ProductRepository productRepository;
 
-    @Autowired
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
@@ -51,14 +50,15 @@ public class ProductService {
     }
 
     public void updateProduct(UUID id, UpdateProductRequestDto updateProductRequestDTO) {
-        checkProductExistsByName(updateProductRequestDTO.name());
         Product product = findProductById(id);
-
-        log.info("Updating product: {} to {}", product, updateProductRequestDTO);
-        product.setName(updateProductRequestDTO.name());
+        if (!Objects.equals(product.getName(), updateProductRequestDTO.name())) {
+            checkProductExistsByName(updateProductRequestDTO.name());
+            log.info("Product name not changed.");
+            product.setName(updateProductRequestDTO.name());
+        }
+        log.info("Updating product: {}", updateProductRequestDTO);
         product.setPrice(updateProductRequestDTO.price());
         product.setStockQuantity(updateProductRequestDTO.stockQuantity());
-
         productRepository.save(product);
     }
 
@@ -67,6 +67,11 @@ public class ProductService {
 
         log.info("Deleting product: {}", product);
         productRepository.delete(product);
+    }
+
+    public void decreaseStockQuantity(Product product, int quantity) {
+        product.setStockQuantity(product.getStockQuantity() - quantity);
+        productRepository.save(product);
     }
 
     public void checkStockQuantity(Product product, int quantity) {
