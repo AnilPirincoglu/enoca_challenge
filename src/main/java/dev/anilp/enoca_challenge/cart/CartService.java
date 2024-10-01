@@ -46,8 +46,7 @@ public class CartService {
     public void addProductToCart(AddProductToCartRequestDto requestDto, @Positive(message = "Quantity must be a positive integer.") Integer quantity) {
         Cart cart = getCustomerCart(requestDto.customerId());
 
-        Product product = productService.findProductByName(requestDto.productName());
-        productService.checkStockQuantity(product, quantity);
+        Product product = getPurcahsableProduct(requestDto.productName(), quantity);
 
         cart.getCartItems().stream()
                 .filter(item -> item.getProduct().getName().equals(requestDto.productName()))
@@ -87,8 +86,7 @@ public class CartService {
     }
 
     private CartItem createNewCartItem(CartItemRequestDto request, Cart cart) {
-        Product product = productService.findProductByName(request.productName());
-        productService.checkStockQuantity(product, request.quantity());
+        Product product = getPurcahsableProduct(request.productName(), request.quantity());
         return newCartItem(cart, product, request.quantity());
     }
 
@@ -136,5 +134,11 @@ public class CartService {
     private Cart getCustomerCart(UUID customerId) {
         return cartRepository.findCartByCustomerId(customerId)
                 .orElseGet(() -> customerService.findCustomerById(customerId).addCart());
+    }
+
+    private Product getPurcahsableProduct(String productName, Integer quantity) {
+        Product product = productService.findProductByName(productName);
+        productService.checkStockQuantity(product, quantity);
+        return product;
     }
 }
