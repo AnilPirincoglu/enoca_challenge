@@ -15,6 +15,7 @@ import dev.anilp.enoca_challenge.product.ProductService;
 import jakarta.validation.constraints.Positive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,7 @@ public class CartService {
     private final CustomerService customerService;
     private final ProductService productService;
 
+    @Autowired
     public CartService(CartRepository cartRepository, CustomerService customerService, ProductService productService) {
         this.cartRepository = cartRepository;
         this.customerService = customerService;
@@ -46,19 +48,21 @@ public class CartService {
     public void addProductToCart(AddProductToCartRequestDto requestDto, @Positive(message = "Quantity must be a positive integer.") Integer quantity) {
         Cart cart = getCustomerCart(requestDto.customerId());
 
-        Product product = getPurcahsableProduct(requestDto.productName(), quantity);
+        Product product = productService.findProductByName(requestDto.productName());
 
         cart.getCartItems().stream()
                 .filter(item -> item.getProduct().getName().equals(requestDto.productName()))
                 .findFirst()
-                .ifPresentOrElse(cartItem -> updateItemQuantity(cart, cartItem, quantity),
+                .ifPresentOrElse(cartItem -> updateItemQuantity(cart, cartItem, quantity, product),
                         () -> addNewItemToCart(cart, product, quantity));
 
         cart.calculateTotalAmount();
         cartRepository.save(cart);
     }
 
-    private void updateItemQuantity(Cart cart, CartItem cartItem, Integer quantity) {
+    private void updateItemQuantity(Cart cart, CartItem cartItem, Integer quantity, Product product) {
+        productService.checkStockQuantity(product, cartItem.getQuantity() + quantity);
+
         log.info("Updating quantity of cart item {} in cart with id: {}", cartItem.getProduct().getName(), cart.getId());
         cartItem.setQuantity(cartItem.getQuantity() + quantity);
         cartItem.calculateTotalAmount();
@@ -66,6 +70,8 @@ public class CartService {
     }
 
     private void addNewItemToCart(Cart cart, Product product, Integer quantity) {
+        productService.checkStockQuantity(product, quantity);
+
         log.info("Adding product {} to cart with id: {}", product.getName(), cart.getId());
         cart.getCartItems().add(newCartItem(cart, product, quantity));
     }
@@ -126,7 +132,7 @@ public class CartService {
         return cartItem;
     }
 
-    private Cart findCartById(Long cartId) {
+    public Cart findCartById(Long cartId) {
         return cartRepository.findById(cartId)
                 .orElseThrow(() -> new ResourceNotFoundException(CART_NOT_FOUND_WITH_GIVEN_ID, cartId.toString()));
     }
